@@ -1,0 +1,12 @@
+//
+//  Adhoc.xcconfig
+//  Runner
+//
+//  Created by Vignesh Selvaraj on 26/07/2021.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+#include "../../Flutter/Flutter-Debug.xcconfig"
+#include "Warnings.xcconfig"
+BUILD_TYPE = adhoc
