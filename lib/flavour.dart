@@ -24,6 +24,8 @@ class Flavour {
   );
   static late InheritedWidget _currentAppConfiguration;
 
+  static InheritedWidget get currentConfiguration => _currentAppConfiguration;
+
   static Future<String?> get _getBuildTypeFromPlatform async =>
       await _channel.invokeMethod(
         'BuildType',
@@ -35,20 +37,27 @@ class Flavour {
     required BuildType debug,
     required BuildType release,
     DefualtConfig defualtConfig = DefualtConfig.DEBUG,
-    List<BuildType?>? otherBuildType,
+    List<BuildType>? otherBuildType,
   }) async {
     var buildType = await _getBuildTypeFromPlatform;
-    if (buildType == debug.buildName) return debug.appConfig;
-    if (buildType == release.buildName) return release.appConfig;
+    late InheritedWidget config;
+    if (buildType == debug.buildName) config = debug.appConfig;
+    if (buildType == release.buildName) config = release.appConfig;
     final currentBuild = otherBuildType?.firstWhere(
-      (element) => element?.buildName == buildType,
+      (element) => element.buildName == buildType,
       orElse: () {
         return debug;
       },
     );
-    return currentBuild?.appConfig ??
-        (defualtConfig == DefualtConfig.DEBUG
-            ? debug.appConfig
-            : release.appConfig);
+    if (config == null) {
+      config = currentBuild?.appConfig ??
+          (defualtConfig == DefualtConfig.DEBUG
+              ? debug.appConfig
+              : release.appConfig);
+    }
+
+    _currentAppConfiguration = config;
+
+    return config;
   }
 }
